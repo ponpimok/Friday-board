@@ -26,7 +26,7 @@ public class CardObjScript : MonoBehaviour
         text_power_use.text = thisCardInfo.power_card.ToString();
         text_effect.text = thisCardInfo.card_effect_name;
         text_destroy.text = thisCardInfo.use_hp_to_destroy.ToString();
-        if (!thisCardInfo.starter_card)
+        if (!thisCardInfo.no_fight_card)
         {
             text_name_fight.text = thisCardInfo.name_fight_card;
             text_num_crad.text = thisCardInfo.take_card.ToString();
