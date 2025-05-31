@@ -7,6 +7,7 @@ using TMPro;
 public class CardObjScript : MonoBehaviour
 {
     public CardPlayScript thisCardInfo;
+    public bool useOnly;
 
     public Image image_card;
     public TextMeshProUGUI text_name_use;
@@ -20,8 +21,36 @@ public class CardObjScript : MonoBehaviour
     public TextMeshProUGUI text_power_fight_2;
     public TextMeshProUGUI text_power_fight_3;
 
-    void Start()
+    private bool seeUse;
+    public void RotateCrad()
     {
+        if (!useOnly)
+        {
+            if (seeUse)
+            {
+                GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 0);
+                seeUse = false;
+            }
+            else
+            {
+                GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, -180);
+                seeUse = true;
+            }
+        }
+    }
+    private void Start()
+    {
+        seeUse = true;
+        if (thisCardInfo.no_fight_card)
+        {
+            useOnly = true;
+            GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            useOnly = false;
+        }
+
         text_name_use.text = thisCardInfo.name_use_card;
         text_power_use.text = thisCardInfo.power_card.ToString();
         text_effect.text = thisCardInfo.card_effect_name;

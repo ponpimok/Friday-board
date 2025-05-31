@@ -5,7 +5,7 @@ using TMPro;
 
 public class TextAgeScript : MonoBehaviour
 {
-    [SerializeField] private GameScript getInfo;
+    [SerializeField] private DataCardScript getInfo;
     [SerializeField] private TextMeshProUGUI show_num_age_black;
     [SerializeField] private TextMeshProUGUI show_num_age_white;
     [SerializeField] private GameObject age_black;

@@ -6,14 +6,11 @@ using TMPro;
 public class TextNumCardScript : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI numCard;
-    [SerializeField] private GameScript getInfo;
-    private void Start()
+    [SerializeField] private TextMeshProUGUI numCardUsed;
+    [SerializeField] private DataCardScript getInfo;
+    private void Update()
     {
         numCard.text = getInfo.my_crad.Count.ToString();
-    }
-
-    void Update()
-    {
-        
+        numCardUsed.text = getInfo.my_crad_used.Count.ToString();
     }
 }
