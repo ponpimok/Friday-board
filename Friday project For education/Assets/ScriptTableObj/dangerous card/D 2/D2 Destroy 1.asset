@@ -15,6 +15,7 @@ MonoBehaviour:
   no_fight_card: 0
   card_effect: 1
   card_effect_name: Destroy 1
+  effect_value: 1
   power_card: 1
   name_use_card: Aware
   use_hp_to_destroy: 1

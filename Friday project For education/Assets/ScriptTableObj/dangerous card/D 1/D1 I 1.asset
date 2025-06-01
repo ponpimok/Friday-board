@@ -15,6 +15,7 @@ MonoBehaviour:
   no_fight_card: 0
   card_effect: 1
   card_effect_name: Insert under pile 1
+  effect_value: 1
   power_card: 0
   name_use_card: Defraud
   use_hp_to_destroy: 1

@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Scripting;
 
 public class PlayCardScript : MonoBehaviour
 {
-    private DataCardScript dataCardScript;
-    [SerializeField] private TextHPScroipt hp;
+    public DataCardScript dataCardScript;
+    private EffectCardScript effectCardScript;
+    public TextHPScroipt hp;
 
+    public int playOrder = 0;
     public int phase;//0,1,2 ex
 
-    [SerializeField] private GameObject cardPrefad;
+    public GameObject cardPrefad;
     private GameObject newCard1;
     private GameObject newCard2;
     private GameObject fightThis;
@@ -24,15 +27,24 @@ public class PlayCardScript : MonoBehaviour
     private int num_to_draw;
     [SerializeField] private GameObject warnUI;
 
+    public List<GameObject> destoryList;
+    [SerializeField] private GameObject destroyCradUI;
+    private int pointToDestroy;
+
+    //effect card
+    [HideInInspector] public int getCradFreeFromEffect;
     private void DrawCardDangerous()
     {
+        playOrder = 1;
         buttonChoseUI[3].gameObject.SetActive(false);
         if (dataCardScript.fight_card_s.Count > 1)
         {
             newCard1 = Instantiate(cardPrefad, showCard[0]);
             newCard2 = Instantiate(cardPrefad, showCard[1]);
             newCard1.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.fight_card_s[0];
+            newCard1.GetComponent<CardObjScript>().effectCard = effectCardScript;
             newCard2.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.fight_card_s[1];
+            newCard2.GetComponent<CardObjScript>().effectCard = effectCardScript;
             dataCardScript.fight_card_s.RemoveAt(1);
             dataCardScript.fight_card_s.RemoveAt(0);
 
@@ -44,6 +56,7 @@ public class PlayCardScript : MonoBehaviour
         {
             GameObject newCard1 = Instantiate(cardPrefad, showCard[2]);
             newCard1.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.fight_card_s[0];
+            newCard1.GetComponent<CardObjScript>().effectCard = effectCardScript;
             dataCardScript.fight_card_s.RemoveAt(0);
 
             buttonChoseUI[0].SetActive(true);
@@ -61,11 +74,13 @@ public class PlayCardScript : MonoBehaviour
         if (!i)
         {
             fightThis = Instantiate(newCard1, showCard[2]);
+            fightThis.GetComponent<CardObjScript>().effectCard = effectCardScript;
             dataCardScript.not_fight_now.Add(newCard2.GetComponent<CardObjScript>().thisCardInfo);
         }
         else
         {
             fightThis = Instantiate(newCard2, showCard[2]);
+            fightThis.GetComponent<CardObjScript>().effectCard = effectCardScript;
             dataCardScript.not_fight_now.Add(newCard1.GetComponent<CardObjScript>().thisCardInfo);
         }
         Destroy(newCard1);
@@ -75,6 +90,7 @@ public class PlayCardScript : MonoBehaviour
             item.gameObject.SetActive(false);
         }
         buttonChoseUI[3].gameObject.SetActive(true);
+        playOrder = 2;
     }
     public void DontChose()
     {
@@ -82,35 +98,53 @@ public class PlayCardScript : MonoBehaviour
     }
     public void DrawCardUse()
     {
-        if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card > num_to_draw)
+        if (playOrder == 2 && dataCardScript.my_crad.Count > 0)
         {
-            num_to_draw++;
-            if (dataCardScript.my_crad.Count > 0)
+            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card > num_to_draw)
             {
-                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card == num_to_draw)
+                num_to_draw++;
+                //Debug.Log("num_to_draw : " + num_to_draw);
+                if (dataCardScript.my_crad.Count > 0)
                 {
-                    warnUI.SetActive(true);//เตือนว่าจะเสียเลือด
-                }//เตือนว่าจะเสียเลือด
-                GameObject newCradUseFree = Instantiate(cardPrefad, positionCardFree);
-                newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
-                dataCardScript.my_crad.RemoveAt(0);
-                useCardFree.Add(newCradUseFree);
+                    if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card == num_to_draw)
+                    {
+                        warnUI.SetActive(true);//เตือนว่าจะเสียเลือด
+                    }//เตือนว่าจะเสียเลือด
+                    GameObject newCradUseFree = Instantiate(cardPrefad, positionCardFree);
+                    newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
+                    newCradUseFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+                    dataCardScript.my_crad.RemoveAt(0);
+                    useCardFree.Add(newCradUseFree);
+                }
+            }
+            else
+            {
+                if (dataCardScript.my_crad.Count > 0)
+                {
+                    if (getCradFreeFromEffect <= 0)
+                    {
+                        hp.hp--;
+                    }
+                    else
+                    {
+                        getCradFreeFromEffect -= 0;
+                    }
+                    GameObject newCradUseNotFree = Instantiate(cardPrefad, positionCardNotFree);
+                    newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
+                    newCradUseNotFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+                    dataCardScript.my_crad.RemoveAt(0);
+                    useCardNotFree.Add(newCradUseNotFree);
+                }
             }
         }
-        else
+        else if (playOrder == 2 && dataCardScript.my_crad.Count == 0)
         {
-            if (dataCardScript.my_crad.Count > 0)
-            {
-                hp.hp--;
-                GameObject newCradUseNotFree = Instantiate(cardPrefad, positionCardNotFree);
-                newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
-                dataCardScript.my_crad.RemoveAt(0);
-                useCardNotFree.Add(newCradUseNotFree);
-            }
+            AddAgeCard();
         }
     }
     public void CheckPower()
     {
+        num_to_draw = 0;
         int powerAll = 0;
         foreach (var item in useCardFree)
         {
@@ -123,23 +157,81 @@ public class PlayCardScript : MonoBehaviour
         if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] <= powerAll)
         {
             //ผ่าน
+            fightThis.GetComponent<CardObjScript>().thisCardInfo.no_fight_card = true;
+            dataCardScript.my_crad_used.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
+            Destroy(fightThis);
             CollectCardBack();
+            DrawCardDangerous();
         }
         else
         {
+            dataCardScript.not_fight_now.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
+            Destroy(fightThis);
             hp.hp -= fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] - powerAll;
-            CollectCardBack();
+            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] - powerAll > 0)
+            {
+                pointToDestroy = fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] - powerAll;
+                destroyCradUI.GetComponent<TextDestroyCradScript>().pointHave = pointToDestroy;
+                destroyCradUI.SetActive(true);
+                foreach (var item in useCardFree)
+                {
+                    GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
+                    Destroy(item);
+                    destoryList.Add(showCrad);
+                }
+                foreach (var item in useCardNotFree)
+                {
+                    GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);                    
+                    Destroy(item);
+                    destoryList.Add(showCrad);
+                }
+                useCardFree.Clear();
+                useCardNotFree.Clear();
+                foreach (var item in destoryList)
+                {
+                    item.GetComponent<CardObjScript>().showDestroyButtom = true;
+                }
+            }
             //ไม่ผ่าน ลดเลือด
         }
         buttonChoseUI[3].SetActive(false);
         warnUI.SetActive(false);
+        playOrder = 3;
+    }
+    public void DestroyCard(GameObject gameObject, int use_point)
+    {
+        if (pointToDestroy - use_point >= 0)
+        {
+            destoryList.Remove(gameObject);
+            Destroy(gameObject);
+
+            pointToDestroy -= use_point;
+            destroyCradUI.GetComponent<TextDestroyCradScript>().pointHave = pointToDestroy;
+            if (pointToDestroy == 0 || destoryList.Count == 0)
+            {
+                DontDestroyCard();
+            }
+        }
+    }
+    public void DontDestroyCard()
+    {
+        destroyCradUI.GetComponent<TextDestroyCradScript>().pointHave = 0;
+        destroyCradUI.SetActive(false);
+        getCradFreeFromEffect = 0;
+
+        if (destoryList.Count != 0)
+        {
+            foreach (var item in destoryList)
+            {
+                dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
+                Destroy(item);
+            }
+            destoryList.Clear();
+        }
         DrawCardDangerous();
     }
     private void CollectCardBack()
     {
-        num_to_draw = 0;
-        dataCardScript.my_crad_used.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
-        Destroy(fightThis);
         foreach (var item in useCardFree)
         {
             dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
@@ -153,29 +245,50 @@ public class PlayCardScript : MonoBehaviour
         useCardFree.Clear();
         useCardNotFree.Clear();
     }
+    private void AddAgeCard()
+    {
+        if (dataCardScript.age_card_bs.Count > 0)
+        {
+            dataCardScript.my_crad_used.Add(dataCardScript.age_card_bs[0]);
+            dataCardScript.age_card_bs.RemoveAt(0);
+            dataCardScript.ShuffleCards(dataCardScript.my_crad_used, dataCardScript.my_crad);
+        }//add age black
+        else if (dataCardScript.age_card_ws.Count > 0)
+        {
+            dataCardScript.my_crad_used.Add(dataCardScript.age_card_ws[0]);
+            dataCardScript.age_card_bs.RemoveAt(0);
+            dataCardScript.ShuffleCards(dataCardScript.my_crad_used, dataCardScript.my_crad);
+        }//age white
+        else
+        {
+            //gameover
+        }
+
+    }
 
     private void Awake()
     {
         dataCardScript = GetComponent<DataCardScript>();
+        effectCardScript = GetComponent<EffectCardScript>();
     }
     private void Start()
     {
         phase = 0;
+        getCradFreeFromEffect = 0;
 
         foreach (var item in buttonChoseUI)
         {
             item.gameObject.SetActive(false);
         }
         useCardFree.Clear();
+        destoryList.Clear();
         num_to_draw = 0;
         warnUI.SetActive(false);
+        destroyCradUI.SetActive(false);
 
         DrawCardDangerous();
     }
-
-    // Update is called once per frame
     private void Update()
     {
-        
     }
 }

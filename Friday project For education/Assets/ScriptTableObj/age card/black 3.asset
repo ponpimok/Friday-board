@@ -15,6 +15,7 @@ MonoBehaviour:
   no_fight_card: 1
   card_effect: 1
   card_effect_name: Stop
+  effect_value: 0
   power_card: 0
   name_use_card: Very Tired
   use_hp_to_destroy: 2

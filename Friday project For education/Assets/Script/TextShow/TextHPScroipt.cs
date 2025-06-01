@@ -10,6 +10,10 @@ public class TextHPScroipt : MonoBehaviour
     public int max;
     void Update()
     {
+        if (hp > max)
+        {
+            hp = max;
+        }
         hp_text.text = hp.ToString() + "/" + max.ToString();
     }
 }

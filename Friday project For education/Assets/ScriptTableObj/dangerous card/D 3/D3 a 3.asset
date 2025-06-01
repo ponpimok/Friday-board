@@ -15,6 +15,7 @@ MonoBehaviour:
   no_fight_card: 0
   card_effect: 1
   card_effect_name: Arrange 3 cards
+  effect_value: 3
   power_card: 2
   name_use_card: Vision
   use_hp_to_destroy: 1

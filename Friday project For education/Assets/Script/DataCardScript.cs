@@ -15,7 +15,7 @@ public class DataCardScript : MonoBehaviour
     public List<CardPlayScript> age_card_ws;
     public List<CardPlayScript> fight_card_s;
     public List<CardPlayScript> not_fight_now;
-    private void ShuffleCards(List<CardPlayScript> deck, List<CardPlayScript> addto)
+    public void ShuffleCards(List<CardPlayScript> deck, List<CardPlayScript> addto)
     {
         int num = deck.Count;
         for (int i = 0; i < num; i++)
@@ -40,6 +40,10 @@ public class DataCardScript : MonoBehaviour
         ShuffleCards(age_card_w, age_card_ws);
         ShuffleCards(fight_card, fight_card_s);
 
+        foreach (var item in fight_card_s)
+        {
+            item.no_fight_card = false;
+        }
     }
 
     // Update is called once per frame

@@ -12,12 +12,12 @@ public class TextAgeScript : MonoBehaviour
     private void Start()
     {
         age_black.SetActive(true);
-        show_num_age_black.text = getInfo.age_card_bs.Count.ToString();
-        show_num_age_white.text = getInfo.age_card_ws.Count.ToString();
     }
 
-    void Update()
+    private void Update()
     {
+        show_num_age_black.text = getInfo.age_card_bs.Count.ToString();
+        show_num_age_white.text = getInfo.age_card_ws.Count.ToString();
         if (getInfo.age_card_bs.Count == 0)
         {
             age_black.SetActive(false);

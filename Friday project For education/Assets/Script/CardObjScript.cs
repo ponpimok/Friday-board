@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.Events;
 
 public class CardObjScript : MonoBehaviour
 {
     public CardPlayScript thisCardInfo;
+    public EffectCardScript effectCard;
     public bool useOnly;
 
     public Image image_card;
@@ -22,6 +25,13 @@ public class CardObjScript : MonoBehaviour
     public TextMeshProUGUI text_power_fight_3;
 
     private bool seeUse;
+    private bool seeCrad;
+    public float zoomCrad;
+    [SerializeField] private Button useEffectButton;
+    private bool usedEffect;
+    public Button destroyButton;
+    public bool showDestroyButtom;
+
     public void RotateCrad()
     {
         if (!useOnly)
@@ -38,9 +48,68 @@ public class CardObjScript : MonoBehaviour
             }
         }
     }
+    public void CheckCrad()
+    {
+        if (useOnly)
+        {
+            if (!seeCrad)
+            {
+                GetComponent<RectTransform>().transform.localScale = new Vector3(zoomCrad, zoomCrad, zoomCrad);
+                seeCrad = true;
+                if (!usedEffect)
+                {
+                    useEffectButton.gameObject.SetActive(true);
+                }
+            }
+            else
+            {
+                GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
+                seeCrad = false;
+                if (!usedEffect)
+                {
+                    useEffectButton.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+    private void UseEffect()
+    {
+        GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 90);
+        CheckCrad();
+        usedEffect = true;
+    }
     private void Start()
     {
         seeUse = true;
+        seeCrad = false;
+        useEffectButton.gameObject.SetActive(false);
+        destroyButton.gameObject.SetActive(false);
+        if (thisCardInfo.card_effect)
+        {
+            usedEffect = false;
+            switch (thisCardInfo.card_effect_name)
+            {
+                case "HP +1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.GetHP(thisCardInfo.effect_value); });
+                    break;
+                case "HP +2":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.GetHP(thisCardInfo.effect_value); });
+                    break;
+                case "Card +1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.GetCard(thisCardInfo.effect_value); });
+                    break;
+                case "Card +2":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.GetCard(thisCardInfo.effect_value); });
+                    break;
+                case "Arrange 3 cards":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.SetThreeCard(); });
+                    break;
+                default:
+                    break;
+            }
+            useEffectButton.onClick.AddListener(delegate { UseEffect(); });
+        }
+
         if (thisCardInfo.no_fight_card)
         {
             useOnly = true;
@@ -71,11 +140,14 @@ public class CardObjScript : MonoBehaviour
             text_power_fight_2.gameObject.SetActive(false);
             text_power_fight_3.gameObject.SetActive(false);
         }
-    }
 
-    // Update is called once per frame
-    void Update()
+        destroyButton.onClick.AddListener(delegate { effectCard.gameObject.GetComponent<PlayCardScript>().
+            DestroyCard(this.gameObject, thisCardInfo.use_hp_to_destroy); });
+
+
+    }
+    private void Update()
     {
-        
+        destroyButton.gameObject.SetActive(showDestroyButtom);
     }
 }

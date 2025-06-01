@@ -15,6 +15,7 @@ MonoBehaviour:
   no_fight_card: 1
   card_effect: 0
   card_effect_name: . . .
+  effect_value: 0
   power_card: -1
   name_use_card: Distracted
   use_hp_to_destroy: 2

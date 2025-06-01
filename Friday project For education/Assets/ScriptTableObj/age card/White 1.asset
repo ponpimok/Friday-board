@@ -15,6 +15,7 @@ MonoBehaviour:
   no_fight_card: 1
   card_effect: 1
   card_effect_name: HP -2
+  effect_value: -2
   power_card: 0
   name_use_card: Very hungry
   use_hp_to_destroy: 0
