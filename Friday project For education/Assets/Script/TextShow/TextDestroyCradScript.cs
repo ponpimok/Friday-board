@@ -17,6 +17,13 @@ public class TextDestroyCradScript : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        textPoint.text = "Point Have : " + pointHave.ToString();
+        if (pointHave >=0)
+        {
+            textPoint.text = "Point Have : " + pointHave.ToString();
+        }
+        else
+        {
+            textPoint.text = "Destory One Crad";
+        }
     }
 }

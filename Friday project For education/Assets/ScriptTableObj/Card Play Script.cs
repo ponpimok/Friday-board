@@ -9,6 +9,7 @@ public class CardPlayScript : ScriptableObject
     public string card_effect_name; //ชื่อความสามารถไหม
     public int effect_value;
     public int power_card; //ค่าพลังเท่าไร
+    public bool powerDouble;
     public string name_use_card; //ชื่ออะไรตอนใช้งานฝ่ายเรา
     public int use_hp_to_destroy; //จำนวนพลังชีวิตที่ใช้ในการทำลาย
 

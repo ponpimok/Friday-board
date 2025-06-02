@@ -78,6 +78,12 @@ public class CardObjScript : MonoBehaviour
         CheckCrad();
         usedEffect = true;
     }
+    public void DontUseEffect()
+    {
+        GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 0);
+        CheckCrad();
+        usedEffect = false;
+    }
     private void Start()
     {
         seeUse = true;
@@ -103,6 +109,24 @@ public class CardObjScript : MonoBehaviour
                     break;
                 case "Arrange 3 cards":
                     useEffectButton.onClick.AddListener(delegate { effectCard.SetThreeCard(); });
+                    break;
+                case "Destroy 1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.DestoryOneCrad(); });
+                    break;
+                case "Insert under pile 1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.InsertUnderPile(); });
+                    break;
+                case "Double 1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.DoublePower(); });
+                    break;
+                case "Phase -1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.DownPhase(); });
+                    break;
+                case "Exchange 1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.Exchange(1); });
+                    break;
+                case "Exchange 2":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.Exchange(2); });
                     break;
                 default:
                     break;
@@ -149,5 +173,10 @@ public class CardObjScript : MonoBehaviour
     private void Update()
     {
         destroyButton.gameObject.SetActive(showDestroyButtom);
+        if (thisCardInfo.powerDouble)
+        {
+            int i = thisCardInfo.power_card * 2;
+            text_power_use.text = i.ToString();
+        }
     }
 }
