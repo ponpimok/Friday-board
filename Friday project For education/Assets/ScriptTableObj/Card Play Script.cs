@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class CardPlayScript : ScriptableObject
 {
     public bool no_fight_card; //ใช้การ์ดเริ่มต้นหรือเปล่า
+    public bool must_use_card; //ใช้การ์ดเริ่มต้นหรือเปล่า
     public bool card_effect; //การ์ดมีความสามารถไหม
     public string card_effect_name; //ชื่อความสามารถไหม
     public int effect_value;

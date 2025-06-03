@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: black 5
   m_EditorClassIdentifier: 
   no_fight_card: 1
+  age_card: 1
   card_effect: 1
   card_effect_name: HP -1
   effect_value: -1
   power_card: 0
+  powerDouble: 0
   name_use_card: starve
   use_hp_to_destroy: 2
   name_fight_card: 

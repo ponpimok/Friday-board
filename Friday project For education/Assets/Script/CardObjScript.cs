@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +27,7 @@ public class CardObjScript : MonoBehaviour
     private bool seeUse;
     private bool seeCrad;
     public float zoomCrad;
-    [SerializeField] private Button useEffectButton;
+    public Button useEffectButton;
     private bool usedEffect;
     public Button destroyButton;
     public bool showDestroyButtom;
@@ -72,28 +72,27 @@ public class CardObjScript : MonoBehaviour
             }
         }
     }
-    private void UseEffect()
+    public void UseEffect()
     {
         GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 90);
+        seeCrad = true;
         CheckCrad();
         usedEffect = true;
     }
     public void DontUseEffect()
     {
         GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 0);
+        seeCrad = true;
         CheckCrad();
         usedEffect = false;
     }
-    private void Start()
+    public void AddEffectCard(string nameEffect)
     {
-        seeUse = true;
-        seeCrad = false;
-        useEffectButton.gameObject.SetActive(false);
-        destroyButton.gameObject.SetActive(false);
         if (thisCardInfo.card_effect)
         {
             usedEffect = false;
-            switch (thisCardInfo.card_effect_name)
+            useEffectButton.onClick.AddListener(delegate { UseEffect(); });
+            switch (nameEffect)
             {
                 case "HP +1":
                     useEffectButton.onClick.AddListener(delegate { effectCard.GetHP(thisCardInfo.effect_value); });
@@ -128,11 +127,28 @@ public class CardObjScript : MonoBehaviour
                 case "Exchange 2":
                     useEffectButton.onClick.AddListener(delegate { effectCard.Exchange(2); });
                     break;
-                default:
+                case "Copy":
+                    useEffectButton.onClick.RemoveAllListeners();
+                    useEffectButton.onClick.AddListener(delegate { effectCard.CopyEffectCard(this.gameObject); });
+                    break;
+                case "HP -1":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.GetHP(thisCardInfo.effect_value); });
+                    break;
+                case "HP -2":
+                    useEffectButton.onClick.AddListener(delegate { effectCard.GetHP(thisCardInfo.effect_value); });
+                    break;
+                default://stop และ Highcrad อยู่ใน PlayCardScript, . . . ไม่มีอะไร
                     break;
             }
-            useEffectButton.onClick.AddListener(delegate { UseEffect(); });
         }
+    }
+    private void Start()
+    {
+        seeUse = true;
+        seeCrad = false;
+        useEffectButton.gameObject.SetActive(false);
+        destroyButton.gameObject.SetActive(false);
+        AddEffectCard(thisCardInfo.card_effect_name);
 
         if (thisCardInfo.no_fight_card)
         {

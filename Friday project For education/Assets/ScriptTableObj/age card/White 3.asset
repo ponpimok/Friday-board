@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: White 3
   m_EditorClassIdentifier: 
   no_fight_card: 1
+  age_card: 1
   card_effect: 0
   card_effect_name: . . .
   effect_value: 0
   power_card: -5
+  powerDouble: 0
   name_use_card: Suicide
   use_hp_to_destroy: 0
   name_fight_card: 

@@ -22,6 +22,7 @@ public class DataCardScript : MonoBehaviour
         {
             int num_new = deck.Count;
             int r = Random.Range(0, num_new);
+            deck[r].powerDouble = false;
             addto.Add(deck[r]);
             deck.RemoveAt(r);
         }

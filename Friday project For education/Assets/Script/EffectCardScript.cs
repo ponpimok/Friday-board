@@ -19,6 +19,8 @@ public class EffectCardScript : MonoBehaviour
     public Button[] threeCardButton;
     [HideInInspector] public List<CardPlayScript> gust;
 
+    [HideInInspector] public int checkExchange;
+
     //gethp
     public void GetHP(int i)
     {
@@ -157,6 +159,7 @@ public class EffectCardScript : MonoBehaviour
         }
         else
         {
+            i -= playCardScript.useCardFree.Count;
             Destroy(playCardScript.useCardNotFree[i].gameObject);
             playCardScript.useCardNotFree.RemoveAt(i);
         }
@@ -231,6 +234,7 @@ public class EffectCardScript : MonoBehaviour
     public void DoublePower()
     {
         playCardScript.doubleUI.SetActive(true);
+        playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().use = 0;
         playCardScript.useEffect = true;
         int i = 0;
         foreach (var item in playCardScript.useCardFree)
@@ -294,39 +298,38 @@ public class EffectCardScript : MonoBehaviour
     public void Exchange(int k)
     {
         playCardScript.doubleUI.SetActive(true);
+        playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().use = 1;
         playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().numExCard = k;
+        playCardScript.doubleUIButton.gameObject.SetActive(true);
         playCardScript.useEffect = true;
+        checkExchange = k;
         int i = 0;
         foreach (var item in playCardScript.useCardFree)
         {
-            if (!item.GetComponent<CardObjScript>().thisCardInfo.powerDouble)
-            {
-                GameObject showCrad = Instantiate(item, playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().showCrad);
-                playCardScript.destoryList.Add(showCrad);
-                showCrad.GetComponent<CardObjScript>().showDestroyButtom = true;
-                showCrad.GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
-                showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Exchange";
-                int j = i;
-                showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
-                    () => ExchangeCrad(j, true)
-                );
-            }
+            GameObject showCrad = Instantiate(item, playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().showCrad);
+            playCardScript.destoryList.Add(showCrad);
+            showCrad.GetComponent<CardObjScript>().showDestroyButtom = true;
+            showCrad.GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
+            showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Exchange";
+            int j = i;
+            showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
+                () => ExchangeCrad(j, true)
+            );
+            Debug.Log(i);
             i++;
         }
         foreach (var item in playCardScript.useCardNotFree)
         {
-            if (!item.GetComponent<CardObjScript>().thisCardInfo.powerDouble)
-            {
-                GameObject showCrad = Instantiate(item, playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().showCrad);
-                playCardScript.destoryList.Add(showCrad);
-                showCrad.GetComponent<CardObjScript>().showDestroyButtom = true;
-                showCrad.GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
-                showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Exchange";
-                int j = i;
-                showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
-                    () => ExchangeCrad(j, false)
-                );
-            }
+            GameObject showCrad = Instantiate(item, playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().showCrad);
+            playCardScript.destoryList.Add(showCrad);
+            showCrad.GetComponent<CardObjScript>().showDestroyButtom = true;
+            showCrad.GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
+            showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Exchange";
+            int j = i;
+            showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
+                () => ExchangeCrad(j, false)
+            );
+            Debug.Log(i);
             i++;
         }
     }
@@ -334,12 +337,102 @@ public class EffectCardScript : MonoBehaviour
     {
         if (free)
         {
-
+            dataCardScript.my_crad_used.Add(playCardScript.useCardFree[k].GetComponent<CardObjScript>().thisCardInfo);
+            Destroy(playCardScript.useCardFree[k]);
+            playCardScript.useCardFree.RemoveAt(k);
+            playCardScript.num_to_draw--;
+            Destroy(playCardScript.destoryList[k].gameObject);
         }
         else
         {
-
+            k -= playCardScript.useCardFree.Count;
+            dataCardScript.my_crad_used.Add(playCardScript.useCardNotFree[k].GetComponent<CardObjScript>().thisCardInfo);
+            Destroy(playCardScript.useCardNotFree[k]);
+            playCardScript.useCardNotFree.RemoveAt(k);
+            playCardScript.exchangeEffect++;
+            Destroy(playCardScript.destoryList[k + playCardScript.useCardFree.Count].gameObject);
         }
+
+        checkExchange--;
+        if (checkExchange == 0)
+        {
+            foreach (var item in playCardScript.destoryList)
+            {
+                Destroy(item.gameObject);
+            }
+            playCardScript.destoryList.Clear();
+            playCardScript.doubleUI.SetActive(false);
+            playCardScript.useEffect = false;
+        }
+    }
+    //Copy
+    public void CopyEffectCard(GameObject thisCard)
+    {
+        playCardScript.doubleUI.SetActive(true);
+        playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().use = 2;
+        playCardScript.useEffect = true;
+        playCardScript.doubleUIButton.gameObject.SetActive(true);
+        int i = 0;
+        foreach (var item in playCardScript.useCardFree)
+        {
+            if (item.GetComponent<CardObjScript>().thisCardInfo.card_effect &&
+                item.GetComponent<CardObjScript>().thisCardInfo.card_effect_name != "Copy")
+            {
+                GameObject showCrad = Instantiate(item, playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().showCrad);
+                playCardScript.destoryList.Add(showCrad);
+                showCrad.GetComponent<CardObjScript>().showDestroyButtom = true;
+                showCrad.GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
+                showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Copy";
+                int j = i;
+                showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
+                    () => ChageEffect(j, true, thisCard)
+                );
+            }
+            i++;
+        }
+        foreach (var item in playCardScript.useCardNotFree)
+        {
+            if (item.GetComponent<CardObjScript>().thisCardInfo.card_effect &&
+                item.GetComponent<CardObjScript>().thisCardInfo.card_effect_name != "Copy")
+            {
+                GameObject showCrad = Instantiate(item, playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().showCrad);
+                playCardScript.destoryList.Add(showCrad);
+                showCrad.GetComponent<CardObjScript>().showDestroyButtom = true;
+                showCrad.GetComponent<RectTransform>().transform.localScale = new Vector3(1, 1, 1);
+                showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Copy";
+                int j = i;
+                showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
+                    () => ChageEffect(j, false, thisCard)
+                );
+            }
+            i++;
+        }
+    }
+    private void ChageEffect(int i, bool free, GameObject card)
+    {
+        CardObjScript cardObjScript = card.GetComponent<CardObjScript>();
+        if (free)
+        {
+            //name
+            cardObjScript.text_effect.text =
+                playCardScript.useCardFree[i].GetComponent<CardObjScript>().thisCardInfo.card_effect_name;
+            //effect
+            cardObjScript.useEffectButton.onClick.RemoveAllListeners();
+            cardObjScript.useEffectButton.onClick.AddListener(delegate { cardObjScript.UseEffect(); });
+            cardObjScript.AddEffectCard(playCardScript.useCardFree[i].GetComponent<CardObjScript>().thisCardInfo.card_effect_name);
+        }
+        else
+        {
+            i -= playCardScript.useCardFree.Count;
+            //name
+            cardObjScript.text_effect.text =
+                playCardScript.useCardNotFree[i].GetComponent<CardObjScript>().thisCardInfo.card_effect_name;
+            //effect
+            cardObjScript.useEffectButton.onClick.RemoveAllListeners();
+            cardObjScript.useEffectButton.onClick.AddListener(delegate { cardObjScript.UseEffect(); });
+            cardObjScript.AddEffectCard(playCardScript.useCardNotFree[i].GetComponent<CardObjScript>().thisCardInfo.card_effect_name);
+        }
+        cardObjScript.DontUseEffect();
         foreach (var item in playCardScript.destoryList)
         {
             Destroy(item.gameObject);
@@ -347,19 +440,14 @@ public class EffectCardScript : MonoBehaviour
         playCardScript.destoryList.Clear();
         playCardScript.doubleUI.SetActive(false);
         playCardScript.useEffect = false;
-
     }
-    //Copy
-    //public void CopyEffectCard()
-    //{
-
-    //}
-    //public void 
+    //ageCrad in PlayCardScript
     private void Awake()
     {
         playCardScript = GetComponent<PlayCardScript>();
         dataCardScript = GetComponent<DataCardScript>();
         textHPScroipt = playCardScript.hp;
         setThreeCardUI.SetActive(false);
+        checkExchange = 0;
     }
 }

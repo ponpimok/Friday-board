@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: black 4
   m_EditorClassIdentifier: 
   no_fight_card: 1
+  must_use_card: 0
   card_effect: 1
-  card_effect_name: Highcrad = 0
+  card_effect_name: Highcrad =0
   effect_value: 0
   power_card: 0
+  powerDouble: 0
   name_use_card: Fear
   use_hp_to_destroy: 2
   name_fight_card: 

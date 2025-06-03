@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: black 3
   m_EditorClassIdentifier: 
   no_fight_card: 1
+  age_card: 1
   card_effect: 1
   card_effect_name: Stop
   effect_value: 0
   power_card: 0
+  powerDouble: 0
   name_use_card: Very Tired
   use_hp_to_destroy: 2
   name_fight_card: 

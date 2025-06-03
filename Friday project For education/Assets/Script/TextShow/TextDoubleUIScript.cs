@@ -6,14 +6,9 @@ using UnityEngine;
 public class TextDoubleUIScript : MonoBehaviour
 {
     public Transform showCrad;
-    public int use;//0 = Double, 1 = Exchange,
+    public int use;//0 = Double, 1 = Exchange, 2 = copy
     public int numExCard;
     [SerializeField] private TextMeshProUGUI text;
-
-    private void Start()
-    {
-
-    }
     private void Update()
     {
         switch (use)
@@ -23,6 +18,9 @@ public class TextDoubleUIScript : MonoBehaviour
                 break;
             case 1:
                 text.text = "Exchange " + numExCard + " Card";
+                break;
+            case 2:
+                text.text = "Copy Effect 1 Crad";
                 break;
             default:
                 break;
