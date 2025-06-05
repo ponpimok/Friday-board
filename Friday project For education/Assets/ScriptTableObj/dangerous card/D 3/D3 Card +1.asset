@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: D3 Card +1
   m_EditorClassIdentifier: 
   no_fight_card: 0
+  no_fight_card_in_game: 0
+  must_use_card: 0
   card_effect: 1
   card_effect_name: Card +1
   effect_value: 1
   power_card: 2
+  powerDouble: 0
   name_use_card: Experience
   use_hp_to_destroy: 1
   name_fight_card: Explore deeper
   take_card: 3
   power_enemy: 020000000500000008000000
+  artCard: {fileID: 21300000, guid: bd1b86bd21c3b3a4295fe10f519f4664, type: 3}

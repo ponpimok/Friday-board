@@ -148,23 +148,23 @@ public class CardObjScript : MonoBehaviour
         seeCrad = false;
         useEffectButton.gameObject.SetActive(false);
         destroyButton.gameObject.SetActive(false);
+        image_card.sprite = thisCardInfo.artCard;
         AddEffectCard(thisCardInfo.card_effect_name);
 
-        if (thisCardInfo.no_fight_card)
-        {
-            useOnly = true;
-            GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else
-        {
-            useOnly = false;
-        }
+        Debug.Log("no_fight_card_in_game : " + thisCardInfo.no_fight_card_in_game);
+        useOnly = thisCardInfo.no_fight_card_in_game;
+
+        //text_name_use.gameObject.SetActive(false);
+        //text_power_use.gameObject.SetActive(false);
+        //text_effect.gameObject.SetActive(false);
+        //text_destroy.gameObject.SetActive(false);
 
         text_name_use.text = thisCardInfo.name_use_card;
         text_power_use.text = thisCardInfo.power_card.ToString();
         text_effect.text = thisCardInfo.card_effect_name;
         text_destroy.text = thisCardInfo.use_hp_to_destroy.ToString();
-        if (!thisCardInfo.no_fight_card)
+
+        if (!useOnly)
         {
             text_name_fight.text = thisCardInfo.name_fight_card;
             text_num_crad.text = thisCardInfo.take_card.ToString();
@@ -174,6 +174,8 @@ public class CardObjScript : MonoBehaviour
         }
         else
         {
+            GetComponent<RectTransform>().transform.rotation = Quaternion.Euler(0, 0, 0);
+
             text_name_fight.gameObject.SetActive(false);
             text_num_crad.gameObject.SetActive(false);
             text_power_fight_1.gameObject.SetActive(false);

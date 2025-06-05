@@ -44,12 +44,21 @@ public class DataCardScript : MonoBehaviour
         foreach (var item in fight_card_s)
         {
             item.no_fight_card = false;
+            item.no_fight_card_in_game = false;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        foreach (var item in age_card_bs)
+        {
+            item.no_fight_card = true;
+            item.no_fight_card_in_game = true;
+        }
+        foreach (var item in age_card_ws)
+        {
+            item.no_fight_card = true;
+            item.no_fight_card_in_game = true;
+        }
+        foreach (var item in my_crad)
+        {
+            item.no_fight_card_in_game = true;
+        }
     }
 }

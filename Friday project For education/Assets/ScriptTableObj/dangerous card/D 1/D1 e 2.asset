@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: D1 e 2
   m_EditorClassIdentifier: 
   no_fight_card: 0
+  no_fight_card_in_game: 0
+  must_use_card: 0
   card_effect: 1
   card_effect_name: Exchange 2
   effect_value: 2
@@ -20,6 +22,7 @@ MonoBehaviour:
   powerDouble: 0
   name_use_card: Strategic Plan
   use_hp_to_destroy: 1
-  name_fight_card: Rafting to shipwreck
+  name_fight_card: 
   take_card: 1
   power_enemy: 000000000100000003000000
+  artCard: {fileID: 21300000, guid: 46339aac20aa472409be3d3e1795dd1f, type: 3}

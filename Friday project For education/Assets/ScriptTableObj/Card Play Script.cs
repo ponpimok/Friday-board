@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "New Card",menuName = "Card/Create New Card")]
 public class CardPlayScript : ScriptableObject
 {
-    public bool no_fight_card; //ใช้การ์ดเริ่มต้นหรือเปล่า
+    public bool no_fight_card; //ใช้การ์ดเริ่มต้นหรือเปล่า //ไม่แก้ค่า
+    [HideInInspector] public bool no_fight_card_in_game; //ใช้การ์ดเริ่มต้นหรือเปล่า
     public bool must_use_card; //ใช้การ์ดเริ่มต้นหรือเปล่า
     public bool card_effect; //การ์ดมีความสามารถไหม
     public string card_effect_name; //ชื่อความสามารถไหม
@@ -18,18 +20,5 @@ public class CardPlayScript : ScriptableObject
     public int take_card; //จำนวนการ์ดที่สามารถใช้สูดได้
     public int[] power_enemy;//พลังของอุปสรรค
 
-    private void Awake()
-    {
-        if (no_fight_card)
-        {
-            name_fight_card = null;
-            take_card = 0;
-            power_enemy = null;
-        }
-
-        if (!card_effect)
-        {
-            card_effect_name = (". . .");
-        }
-    }
+    public Sprite artCard;
 }

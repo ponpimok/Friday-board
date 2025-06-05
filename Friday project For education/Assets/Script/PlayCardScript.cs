@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UI;
@@ -16,16 +15,17 @@ public class PlayCardScript : MonoBehaviour
 
     [Header("Check Value")]
     public int playOrder = 0;
-    public int phase;//0,1,2 ex
+    public int phase;//0,1,2 ,P3,P
     public int effectDownPhase;
 
     [Header("Reg Obj")]
     public GameObject cardPrefad;
     private GameObject newCard1;
     private GameObject newCard2;
-    private GameObject fightThis;
+    public GameObject fightThis;
     [SerializeField] private Transform[] showCard;//1,2,3
     [SerializeField] private GameObject[] buttonChoseUI;
+    [SerializeField] private GameObject[] phaseUI;
 
     [Header("Check Card")]
     public List<GameObject> useCardFree;
@@ -57,8 +57,10 @@ public class PlayCardScript : MonoBehaviour
             newCard1 = Instantiate(cardPrefad, showCard[0]);
             newCard2 = Instantiate(cardPrefad, showCard[1]);
             newCard1.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.fight_card_s[0];
+            newCard1.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = false;
             newCard1.GetComponent<CardObjScript>().effectCard = effectCardScript;
             newCard2.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.fight_card_s[1];
+            newCard2.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = false;
             newCard2.GetComponent<CardObjScript>().effectCard = effectCardScript;
             dataCardScript.fight_card_s.RemoveAt(1);
             dataCardScript.fight_card_s.RemoveAt(0);
@@ -66,23 +68,25 @@ public class PlayCardScript : MonoBehaviour
             buttonChoseUI[0].SetActive(true);
             buttonChoseUI[1].SetActive(true);
             buttonChoseUI[2].SetActive(false);
-        }
-        if (dataCardScript.fight_card_s.Count == 1)
+        }//เหลือมากกว่า 1
+        else if (dataCardScript.fight_card_s.Count == 1)
         {
-            GameObject newCard1 = Instantiate(cardPrefad, showCard[2]);
+            newCard1 = Instantiate(cardPrefad, showCard[2]);
             newCard1.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.fight_card_s[0];
+            newCard1.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = false;
             newCard1.GetComponent<CardObjScript>().effectCard = effectCardScript;
             dataCardScript.fight_card_s.RemoveAt(0);
 
             buttonChoseUI[0].SetActive(true);
             buttonChoseUI[1].SetActive(false);
             buttonChoseUI[2].SetActive(true);
-        }
+        }//เหลือ 1
         else
         {
-            DontChose();
+            ChangePhase();
+            Debug.Log("Change Phase");
             //เปลี่ยนเฟส
-        }
+        }//การ์ดหมด
     }
     public void ChoseThisCard(bool i)
     {
@@ -109,8 +113,24 @@ public class PlayCardScript : MonoBehaviour
     }
     public void DontChose()
     {
+        dataCardScript.not_fight_now.Add(newCard1.GetComponent<CardObjScript>().thisCardInfo);
+        Destroy(newCard1);
+        ChangePhase();
+    }
+    private void ChangePhase()
+    {
         //เปลี่ยนเฟส
-        phase++;
+        if (phase <= 1)
+        {
+            phase++;
+            showPhase(phase);
+            dataCardScript.ShuffleCards(dataCardScript.not_fight_now, dataCardScript.fight_card_s);
+            DrawCardDangerous();
+        }//play nomal
+        else
+        {
+
+        }//p
     }
     public void DrawCardUse()
     {
@@ -126,7 +146,11 @@ public class PlayCardScript : MonoBehaviour
                     newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
                     newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
                     newCradUseFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+
+                    dataCardScript.my_crad[0] = null;
                     dataCardScript.my_crad.RemoveAt(0);
+                    UnityEditor.EditorUtility.SetDirty(this);
+
                     useCardFree.Add(newCradUseFree);
 
                     if (newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.card_effect_name == "Stop")
@@ -156,7 +180,11 @@ public class PlayCardScript : MonoBehaviour
                     newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
                     newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
                     newCradUseNotFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+
+                    dataCardScript.my_crad[0] = null;
                     dataCardScript.my_crad.RemoveAt(0);
+                    UnityEditor.EditorUtility.SetDirty(this);
+
                     useCardNotFree.Add(newCradUseNotFree);
                 }
             }
@@ -225,15 +253,14 @@ public class PlayCardScript : MonoBehaviour
             {
                 powerAll += item;
             }
+
             Debug.Log("powerAll : " + powerAll);
-            if (phase != 0)
-            {
-                phase -= effectDownPhase;
-            }
-            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] <= powerAll)
+            Debug.Log("phase : " + phase);
+            Debug.Log("effectDownPhase : " + effectDownPhase);
+            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] <= powerAll)
             {
                 //ผ่าน
-                fightThis.GetComponent<CardObjScript>().thisCardInfo.no_fight_card = true;
+                fightThis.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = true;
                 dataCardScript.my_crad_used.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
                 Destroy(fightThis);
                 CollectCardBack();
@@ -243,10 +270,10 @@ public class PlayCardScript : MonoBehaviour
             {
                 dataCardScript.not_fight_now.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
                 Destroy(fightThis);
-                hp.hp -= fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] - powerAll;
-                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] - powerAll > 0)
+                hp.hp -= fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll;
+                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll > 0)
                 {
-                    pointToDestroy = fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase] - powerAll;
+                    pointToDestroy = fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll;
                     destroyCradUI.GetComponent<TextDestroyCradScript>().pointHave = pointToDestroy;
                     destroyCradUI.SetActive(true);
                     foreach (var item in useCardFree)
@@ -334,14 +361,18 @@ public class PlayCardScript : MonoBehaviour
             dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
             Destroy(item);
         }
+        UnityEditor.EditorUtility.SetDirty(this);
+        useCardFree.Clear();
+        UnityEditor.EditorUtility.SetDirty(this);
         foreach (var item in useCardNotFree)
         {
             item.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
             dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
             Destroy(item);
         }
-        useCardFree.Clear();
+        UnityEditor.EditorUtility.SetDirty(this);
         useCardNotFree.Clear();
+        UnityEditor.EditorUtility.SetDirty(this);
     }
     private void AddAgeCard()
     {
@@ -375,6 +406,14 @@ public class PlayCardScript : MonoBehaviour
         doubleUI.SetActive(false);
         useEffect = false;
     }//CancelExchange
+    private void showPhase(int p)
+    {
+        for (int i = 0; i < phaseUI.Length; i++)
+        {
+            phaseUI[i].SetActive(false);
+        }
+        phaseUI[phase].SetActive(true);
+    }
     private void Awake()
     {
         dataCardScript = GetComponent<DataCardScript>();
@@ -383,6 +422,7 @@ public class PlayCardScript : MonoBehaviour
     private void Start()
     {
         phase = 0;
+        showPhase(phase);
         getCradFreeFromEffect = 0;
         useEffect = false;
         effectDownPhase = 0;

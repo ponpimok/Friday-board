@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: black 1
   m_EditorClassIdentifier: 
   no_fight_card: 1
-  age_card: 1
+  must_use_card: 0
   card_effect: 0
   card_effect_name: . . .
   effect_value: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   name_fight_card: 
   take_card: 0
   power_enemy: 
+  artCard: {fileID: 21300000, guid: 69e1ee1692cc01f4fb3368d7d6d98ef9, type: 3}

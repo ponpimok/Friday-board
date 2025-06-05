@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: D1 Destroy 1
   m_EditorClassIdentifier: 
   no_fight_card: 0
+  no_fight_card_in_game: 0
+  must_use_card: 0
   card_effect: 1
   card_effect_name: Destroy 1
   effect_value: 1
   power_card: 0
+  powerDouble: 0
   name_use_card: Aware
   use_hp_to_destroy: 1
   name_fight_card: Rafting to shipwreck
   take_card: 1
   power_enemy: 000000000100000003000000
+  artCard: {fileID: 21300000, guid: 5f890e433879a8f40b2963fb658ea66a, type: 3}

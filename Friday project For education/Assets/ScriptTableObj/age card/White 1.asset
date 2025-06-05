@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: White 1
   m_EditorClassIdentifier: 
   no_fight_card: 1
-  age_card: 1
+  no_fight_card_in_game: 1
+  must_use_card: 1
   card_effect: 1
   card_effect_name: HP -2
   effect_value: -2
@@ -24,3 +25,4 @@ MonoBehaviour:
   name_fight_card: 
   take_card: 0
   power_enemy: 
+  artCard: {fileID: 21300000, guid: e39440ce9537059468f9e9b64e903fcc, type: 3}
