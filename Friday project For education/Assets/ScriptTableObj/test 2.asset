@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: test 2
   m_EditorClassIdentifier: 
   no_fight_card: 1
+  no_fight_card_in_game: 1
   must_use_card: 0
   card_effect: 1
   card_effect_name: Destroy 1
   effect_value: 0
-  power_card: 2
+  power_card: 6
   powerDouble: 0
   name_use_card: test2
   use_hp_to_destroy: 1

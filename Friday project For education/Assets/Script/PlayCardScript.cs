@@ -14,7 +14,6 @@ public class PlayCardScript : MonoBehaviour
     public TextHPScroipt hp;
 
     [Header("Check Value")]
-    public int playOrder = 0;
     public int phase;//0,1,2 ,P3,P
     public int effectDownPhase;
 
@@ -48,9 +47,20 @@ public class PlayCardScript : MonoBehaviour
     [HideInInspector] public int exchangeEffect;
     [SerializeField] private GameObject warnAgeCardUI;
 
+
+    [Header("Pirate")]
+    [SerializeField] private GameObject piratePrefad;
+    [SerializeField] private List<GameObject> pirateObj;
+    [SerializeField] private Button[] pirateChackButtom;
+    [SerializeField] private GameObject piratChoseUI;
+    [SerializeField] private Button[] pirateChoseButtom;
+    private bool seePirate;
+    [SerializeField] private Transform[] positionShowPirate;
+    private bool fightPirate;
+    public GameObject warnPirateUI;
+
     private void DrawCardDangerous()
     {
-        playOrder = 1;
         buttonChoseUI[3].gameObject.SetActive(false);
         if (dataCardScript.fight_card_s.Count > 1)
         {
@@ -94,7 +104,10 @@ public class PlayCardScript : MonoBehaviour
         {
             fightThis = Instantiate(newCard1, showCard[2]);
             fightThis.GetComponent<CardObjScript>().effectCard = effectCardScript;
-            dataCardScript.not_fight_now.Add(newCard2.GetComponent<CardObjScript>().thisCardInfo);
+            if (newCard2 != null)
+            {
+                dataCardScript.not_fight_now.Add(newCard2.GetComponent<CardObjScript>().thisCardInfo);
+            }
         }
         else
         {
@@ -109,7 +122,6 @@ public class PlayCardScript : MonoBehaviour
             item.gameObject.SetActive(false);
         }
         buttonChoseUI[3].gameObject.SetActive(true);
-        playOrder = 2;
     }
     public void DontChose()
     {
@@ -129,70 +141,131 @@ public class PlayCardScript : MonoBehaviour
         }//play nomal
         else
         {
-
-        }//p
+            piratChoseUI.SetActive(true);
+            pirateChoseButtom[0].gameObject.SetActive(true);
+            pirateChoseButtom[1].gameObject.SetActive(true);
+        }//pirat
     }
     public void DrawCardUse()
     {
-        if (playOrder == 2 && dataCardScript.my_crad.Count > 0)
+        if (dataCardScript.my_crad.Count > 0)
         {
-            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card > num_to_draw)
+            if (!fightPirate)
             {
-                num_to_draw++;
-                Debug.Log("num_to_draw : " + num_to_draw);
-                if (dataCardScript.my_crad.Count > 0)
+                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card > num_to_draw)
                 {
-                    GameObject newCradUseFree = Instantiate(cardPrefad, positionCardFree);
-                    newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
-                    newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
-                    newCradUseFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
-
-                    dataCardScript.my_crad[0] = null;
-                    dataCardScript.my_crad.RemoveAt(0);
-                    UnityEditor.EditorUtility.SetDirty(this);
-
-                    useCardFree.Add(newCradUseFree);
-
-                    if (newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.card_effect_name == "Stop")
+                    num_to_draw++;
+                    if (dataCardScript.my_crad.Count > 0)
                     {
-                        num_to_draw = fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card;
+                        GameObject newCradUseFree = Instantiate(cardPrefad, positionCardFree);
+                        newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
+                        newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
+                        newCradUseFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+
+                        dataCardScript.my_crad[0] = null;
+                        dataCardScript.my_crad.RemoveAt(0);
+                        UnityEditor.EditorUtility.SetDirty(this);
+
+                        useCardFree.Add(newCradUseFree);
+
+                        if (newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.card_effect_name == "Stop")
+                        {
+                            num_to_draw = fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card;
+                        }//หยุดจั่วจากอายุ
                     }
-                }
+                }//จั่วฟรี
+                else
+                {
+                    if (dataCardScript.my_crad.Count > 0)
+                    {
+                        if (getCradFreeFromEffect <= 0 && exchangeEffect <= 0)
+                        {
+                            //ใส่ผลจากเรือโจรสลัด
+                            hp.hp--;
+                        }
+                        else if (getCradFreeFromEffect > 0)
+                        {
+                            getCradFreeFromEffect -= 1;
+                        }//cardfree
+                        else if (exchangeEffect > 0)
+                        {
+                            exchangeEffect -= 1;
+                        }//exchange
+
+                        GameObject newCradUseNotFree = Instantiate(cardPrefad, positionCardNotFree);
+                        newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
+                        newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
+                        newCradUseNotFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+
+                        dataCardScript.my_crad[0] = null;
+                        dataCardScript.my_crad.RemoveAt(0);
+                        UnityEditor.EditorUtility.SetDirty(this);
+
+                        useCardNotFree.Add(newCradUseNotFree);
+                    }
+                }//จั่วเสียเลือด
             }
             else
             {
-                if (dataCardScript.my_crad.Count > 0)
+                if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.take_card > num_to_draw)
                 {
-                    if (getCradFreeFromEffect <= 0 && exchangeEffect <= 0)
+                    num_to_draw++;
+                    if (dataCardScript.my_crad.Count > 0)
                     {
-                        hp.hp--;
+                        GameObject newCradUseFree = Instantiate(cardPrefad, positionCardFree);
+                        newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
+                        newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
+                        newCradUseFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+
+                        dataCardScript.my_crad[0] = null;
+                        dataCardScript.my_crad.RemoveAt(0);
+                        UnityEditor.EditorUtility.SetDirty(this);
+
+                        useCardFree.Add(newCradUseFree);
+
+                        if (newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.card_effect_name == "Stop")
+                        {
+                            num_to_draw = fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card;
+                        }//หยุดจั่วจากอายุ
                     }
-                    else if(getCradFreeFromEffect > 0)
+                }//จั่วฟรี
+                else
+                {
+                    if (dataCardScript.my_crad.Count > 0)
                     {
-                        getCradFreeFromEffect -= 1;
-                    }//cardfree
-                    else if (exchangeEffect > 0)
-                    {
-                        exchangeEffect -= 1;
-                    }//exchange
+                        if (getCradFreeFromEffect <= 0 && exchangeEffect <= 0)
+                        {
+                            //ใส่ผลจากเรือโจรสลัด
+                            hp.hp--;
+                        }
+                        else if (getCradFreeFromEffect > 0)
+                        {
+                            getCradFreeFromEffect -= 1;
+                        }//cardfree
+                        else if (exchangeEffect > 0)
+                        {
+                            exchangeEffect -= 1;
+                        }//exchange
 
-                    GameObject newCradUseNotFree = Instantiate(cardPrefad, positionCardNotFree);
-                    newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
-                    newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
-                    newCradUseNotFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
+                        GameObject newCradUseNotFree = Instantiate(cardPrefad, positionCardNotFree);
+                        newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
+                        newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
+                        newCradUseNotFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
 
-                    dataCardScript.my_crad[0] = null;
-                    dataCardScript.my_crad.RemoveAt(0);
-                    UnityEditor.EditorUtility.SetDirty(this);
+                        dataCardScript.my_crad[0] = null;
+                        dataCardScript.my_crad.RemoveAt(0);
+                        UnityEditor.EditorUtility.SetDirty(this);
 
-                    useCardNotFree.Add(newCradUseNotFree);
-                }
+                        useCardNotFree.Add(newCradUseNotFree);
+                    }
+                }//จั่วเสียเลือด
             }
+            
         }
-        else if (playOrder == 2 && dataCardScript.my_crad.Count == 0)
+        else if (dataCardScript.my_crad.Count == 0)
         {
             AddAgeCard();
-        }
+        }//เพื่อการ์ดอายุ
     }
     public void CheckPower()
     {
@@ -200,14 +273,16 @@ public class PlayCardScript : MonoBehaviour
         warnAgeCardUI.SetActive(false);
         foreach (var item in useCardFree)
         {
-            if (item.GetComponent<CardObjScript>().thisCardInfo.must_use_card)
+            if (item.GetComponent<CardObjScript>().thisCardInfo.must_use_card &&
+                item.GetComponent<CardObjScript>().usedEffect)
             {
                 canEnd = false;
             }
         }
         foreach (var item in useCardNotFree)
         {
-            if (item.GetComponent<CardObjScript>().thisCardInfo.must_use_card)
+            if (item.GetComponent<CardObjScript>().thisCardInfo.must_use_card &&
+                item.GetComponent<CardObjScript>().usedEffect)
             {
                 canEnd = false;
             }
@@ -253,59 +328,75 @@ public class PlayCardScript : MonoBehaviour
             {
                 powerAll += item;
             }
-
             Debug.Log("powerAll : " + powerAll);
-            Debug.Log("phase : " + phase);
-            Debug.Log("effectDownPhase : " + effectDownPhase);
-            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] <= powerAll)
+
+
+            if (!fightPirate)
             {
-                //ผ่าน
-                fightThis.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = true;
-                dataCardScript.my_crad_used.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
-                Destroy(fightThis);
-                CollectCardBack();
-                DrawCardDangerous();
+                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] <= powerAll)
+                {
+                    //ผ่าน
+                    fightThis.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = true;
+                    dataCardScript.my_crad_used.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
+                    Destroy(fightThis);
+                    CollectCardBack();
+                    DrawCardDangerous();
+                }
+                else
+                {
+                    dataCardScript.not_fight_now.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
+                    Destroy(fightThis);
+                    hp.hp -= fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll;
+                    if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll > 0)
+                    {
+                        pointToDestroy = fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll;
+                        destroyCradUI.GetComponent<TextDestroyCradScript>().pointHave = pointToDestroy;
+                        destroyCradUI.SetActive(true);
+                        foreach (var item in useCardFree)
+                        {
+                            GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
+                            Destroy(item);
+                            destoryList.Add(showCrad);
+                        }
+                        foreach (var item in useCardNotFree)
+                        {
+                            GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
+                            Destroy(item);
+                            destoryList.Add(showCrad);
+                        }
+                        useCardFree.Clear();
+                        useCardNotFree.Clear();
+                        foreach (var item in destoryList)
+                        {
+                            item.GetComponent<CardObjScript>().showDestroyButtom = true;
+                        }
+                    }
+                    //ไม่ผ่าน ลดเลือด
+                }
             }
             else
             {
-                dataCardScript.not_fight_now.Add(fightThis.GetComponent<CardObjScript>().thisCardInfo);
-                Destroy(fightThis);
-                hp.hp -= fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll;
-                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll > 0)
+                if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.power_enemy <= powerAll)
                 {
-                    pointToDestroy = fightThis.GetComponent<CardObjScript>().thisCardInfo.power_enemy[phase - effectDownPhase] - powerAll;
-                    destroyCradUI.GetComponent<TextDestroyCradScript>().pointHave = pointToDestroy;
-                    destroyCradUI.SetActive(true);
-                    foreach (var item in useCardFree)
-                    {
-                        GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
-                        Destroy(item);
-                        destoryList.Add(showCrad);
-                    }
-                    foreach (var item in useCardNotFree)
-                    {
-                        GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
-                        Destroy(item);
-                        destoryList.Add(showCrad);
-                    }
-                    useCardFree.Clear();
-                    useCardNotFree.Clear();
-                    foreach (var item in destoryList)
-                    {
-                        item.GetComponent<CardObjScript>().showDestroyButtom = true;
-                    }
-                }
-                //ไม่ผ่าน ลดเลือด
+                    //not done
+                    warnPirateUI.SetActive(false);
+                    Debug.Log("Next!!");
+                }//การโจรสลัดใบต่อไป
+                else
+                {
+                    warnAgeCardUI.SetActive(false);
+                    warnPirateUI.SetActive(true);
+                }//บังคับจั่ว
             }
             buttonChoseUI[3].SetActive(false);
             warnUI.SetActive(false);
             effectDownPhase = 0;
-            playOrder = 3;
         }
         else
         {
+            warnPirateUI.SetActive(false);
             warnAgeCardUI.SetActive(true);
-        }
+        }//not use age crad
     }
     public void DestroyCard(GameObject gameObject, int use_point)
     {
@@ -392,7 +483,6 @@ public class PlayCardScript : MonoBehaviour
         {
             //gameover
         }
-
     }//no don
     public void CancelDoubleUIButton()
     {
@@ -414,6 +504,39 @@ public class PlayCardScript : MonoBehaviour
         }
         phaseUI[phase].SetActive(true);
     }
+    public void CheckCradPirateButtom()
+    {
+        if (!seePirate)
+        {
+            seePirate = true;
+        }
+        else
+        {
+            seePirate = false;
+        }
+        piratChoseUI.SetActive(seePirate);
+    }
+    public void ChosePiratButtom(bool left)
+    {
+        fightPirate = true;
+        if (left)
+        {
+            pirateObj[0].transform.SetParent(showCard[2]);
+            pirateObj[0].transform.position = showCard[2].transform.position;
+            fightThis = pirateObj[0];
+        }
+        else
+        {
+            pirateObj[1].transform.SetParent(showCard[2]);
+            pirateObj[1].transform.position = showCard[2].transform.position;
+            fightThis = pirateObj[1];
+        }
+        buttonChoseUI[0].gameObject.SetActive(false);
+        buttonChoseUI[1].gameObject.SetActive(false);
+        buttonChoseUI[2].gameObject.SetActive(false);
+        buttonChoseUI[3].gameObject.SetActive(true);
+        piratChoseUI.SetActive(false);
+    }
     private void Awake()
     {
         dataCardScript = GetComponent<DataCardScript>();
@@ -421,12 +544,27 @@ public class PlayCardScript : MonoBehaviour
     }
     private void Start()
     {
-        phase = 0;
+        phase = 2;
         showPhase(phase);
         getCradFreeFromEffect = 0;
         useEffect = false;
         effectDownPhase = 0;
         exchangeEffect = 0;
+
+        seePirate = false;
+        fightPirate = false;
+        pirateChackButtom[0].gameObject.GetComponent<Image>().sprite = dataCardScript.pirate_card_s[0].image;
+        pirateChackButtom[1].gameObject.GetComponent<Image>().sprite = dataCardScript.pirate_card_s[1].image;
+        pirateChoseButtom[0].gameObject.SetActive(false);
+        pirateChoseButtom[1].gameObject.SetActive(false);
+        piratChoseUI.SetActive(false);
+        GameObject obj = Instantiate(piratePrefad, positionShowPirate[0]);
+        obj.GetComponent<CardObjPirateScript>().thisCardInfo = dataCardScript.pirate_card_s[0];
+        pirateObj.Add(obj);
+        obj = Instantiate(piratePrefad, positionShowPirate[1]);
+        obj.GetComponent<CardObjPirateScript>().thisCardInfo = dataCardScript.pirate_card_s[1];
+        pirateObj.Add(obj);
+        warnPirateUI.SetActive(false);
 
         foreach (var item in buttonChoseUI)
         {
@@ -447,13 +585,31 @@ public class PlayCardScript : MonoBehaviour
     {
         if (fightThis != null)
         {
-            if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card == num_to_draw && exchangeEffect <= 0 && getCradFreeFromEffect <= 0)
+            if (!fightPirate)
             {
-                warnUI.SetActive(true);//เตือนว่าจะเสียเลือด
-            }//เตือนว่าจะเสียเลือด
+                if (fightThis.GetComponent<CardObjScript>().thisCardInfo.take_card == num_to_draw &&
+                    exchangeEffect <= 0 &&
+                    getCradFreeFromEffect <= 0)
+                {
+                    warnUI.SetActive(true);//เตือนว่าจะเสียเลือด
+                }//เตือนว่าจะเสียเลือด
+                else
+                {
+                    warnUI.SetActive(false);
+                }
+            }
             else
             {
-                warnUI.SetActive(false);
+                if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.take_card == num_to_draw &&
+                    exchangeEffect <= 0 &&
+                    getCradFreeFromEffect <= 0)
+                {
+                    warnUI.SetActive(true);//เตือนว่าจะเสียเลือด
+                }//เตือนว่าจะเสียเลือด
+                else
+                {
+                    warnUI.SetActive(false);
+                }
             }
         }
     }

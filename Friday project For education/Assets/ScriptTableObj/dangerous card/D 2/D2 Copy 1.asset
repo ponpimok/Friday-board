@@ -25,4 +25,4 @@ MonoBehaviour:
   name_fight_card: Explore island
   take_card: 2
   power_enemy: 010000000300000006000000
-  artCard: {fileID: 21300000, guid: bdbdd9cf86ee4524e907461677b41e4d, type: 3}
+  artCard: {fileID: 21300000, guid: 2a16a99c4042f704e8aaeb3e4c6418f3, type: 3}

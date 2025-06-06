@@ -25,4 +25,4 @@ MonoBehaviour:
   name_fight_card: Beast
   take_card: 4
   power_enemy: 04000000070000000b000000
-  artCard: {fileID: 21300000, guid: 5f8340b6358c9144a9241ff6eb565304, type: 3}
+  artCard: {fileID: 21300000, guid: d661ad3e350f5ad4ba8468663f51bc3e, type: 3}
