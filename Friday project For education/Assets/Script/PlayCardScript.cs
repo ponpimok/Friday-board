@@ -58,6 +58,12 @@ public class PlayCardScript : MonoBehaviour
     [SerializeField] private Transform[] positionShowPirate;
     private bool fightPirate;
     public GameObject warnPirateUI;
+    private bool pirateLeft;
+    public int pirateWin;
+
+    [Header("End Game UI")]
+    [SerializeField] private GameObject winUI;
+    public GameObject loseUI;
 
     private void DrawCardDangerous()
     {
@@ -235,8 +241,12 @@ public class PlayCardScript : MonoBehaviour
                     {
                         if (getCradFreeFromEffect <= 0 && exchangeEffect <= 0)
                         {
-                            //ใส่ผลจากเรือโจรสลัด
                             hp.hp--;
+                            if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.num_effect == 2)
+                            {
+                                hp.hp--;
+                            }
+                            //2 : การ์ดต่อสู้แต่ละใบที่หยิบเพิ่มต้องเสียงพลังชีวิด 2 ชิ้น
                         }
                         else if (getCradFreeFromEffect > 0)
                         {
@@ -260,7 +270,6 @@ public class PlayCardScript : MonoBehaviour
                     }
                 }//จั่วเสียเลือด
             }
-            
         }
         else if (dataCardScript.my_crad.Count == 0)
         {
@@ -327,6 +336,10 @@ public class PlayCardScript : MonoBehaviour
             foreach (var item in findMax)
             {
                 powerAll += item;
+                if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.num_effect == 3)
+                {
+                    powerAll++;
+                }//3 : การ์ดที่หงายจะ + 1 พลัง
             }
             Debug.Log("powerAll : " + powerAll);
 
@@ -381,6 +394,13 @@ public class PlayCardScript : MonoBehaviour
                     //not done
                     warnPirateUI.SetActive(false);
                     Debug.Log("Next!!");
+                    NextPriatButtom();
+                    pirateWin++;
+                    if (pirateWin == 2)
+                    {
+                        winUI.SetActive(true);
+                        //คำนวนคะแนน
+                    }//ชนะเกม
                 }//การโจรสลัดใบต่อไป
                 else
                 {
@@ -481,9 +501,9 @@ public class PlayCardScript : MonoBehaviour
         }//age white
         else
         {
-            //gameover
-        }
-    }//no don
+            loseUI.SetActive(false);
+        }//gameover
+    }
     public void CancelDoubleUIButton()
     {
         effectCardScript.checkExchange = 0;
@@ -519,6 +539,7 @@ public class PlayCardScript : MonoBehaviour
     public void ChosePiratButtom(bool left)
     {
         fightPirate = true;
+        pirateLeft = left;
         if (left)
         {
             pirateObj[0].transform.SetParent(showCard[2]);
@@ -537,6 +558,21 @@ public class PlayCardScript : MonoBehaviour
         buttonChoseUI[3].gameObject.SetActive(true);
         piratChoseUI.SetActive(false);
     }
+    private void NextPriatButtom()
+    {
+        if (!pirateLeft)
+        {
+            pirateObj[0].transform.SetParent(showCard[2]);
+            pirateObj[0].transform.position = showCard[2].transform.position;
+            fightThis = pirateObj[0];
+        }
+        else
+        {
+            pirateObj[1].transform.SetParent(showCard[2]);
+            pirateObj[1].transform.position = showCard[2].transform.position;
+            fightThis = pirateObj[1];
+        }
+    }
     private void Awake()
     {
         dataCardScript = GetComponent<DataCardScript>();
@@ -544,12 +580,13 @@ public class PlayCardScript : MonoBehaviour
     }
     private void Start()
     {
-        phase = 2;
+        phase = 0;
         showPhase(phase);
         getCradFreeFromEffect = 0;
         useEffect = false;
         effectDownPhase = 0;
         exchangeEffect = 0;
+        pirateWin = 0;
 
         seePirate = false;
         fightPirate = false;
@@ -578,6 +615,9 @@ public class PlayCardScript : MonoBehaviour
         destroyCradUI.SetActive(false);
         doubleUI.SetActive(false);
         doubleUIButton.gameObject.SetActive(false);
+
+        winUI.SetActive(false);
+        loseUI.SetActive(false);
 
         DrawCardDangerous();
     }

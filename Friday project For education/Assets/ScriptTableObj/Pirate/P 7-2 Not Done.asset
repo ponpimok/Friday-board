@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a95ec07355a7cfd43af483c586b050b5, type: 3}
-  m_Name: P 0
+  m_Name: P 7-2 Not Done
   m_EditorClassIdentifier: 
-  take_card: 0
-  power_enemy: 0
+  take_card: 7
+  power_enemy: 16
   have_effect: 1
-  effect_text: Fight against all remaining dangerous cards
+  effect_text: add card -2 instead -1
   image: {fileID: 21300000, guid: b334be8183215e04e95a1a943daf852b, type: 3}
