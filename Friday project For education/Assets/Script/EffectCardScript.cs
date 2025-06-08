@@ -339,23 +339,37 @@ public class EffectCardScript : MonoBehaviour
         {
             dataCardScript.my_crad_used.Add(playCardScript.useCardFree[k].GetComponent<CardObjScript>().thisCardInfo);
             Destroy(playCardScript.useCardFree[k]);
-            playCardScript.useCardFree.RemoveAt(k);
             playCardScript.num_to_draw--;
             Destroy(playCardScript.destoryList[k].gameObject);
+            //playCardScript.useCardFree.RemoveAt(k);
         }
         else
         {
             k -= playCardScript.useCardFree.Count;
             dataCardScript.my_crad_used.Add(playCardScript.useCardNotFree[k].GetComponent<CardObjScript>().thisCardInfo);
             Destroy(playCardScript.useCardNotFree[k]);
-            playCardScript.useCardNotFree.RemoveAt(k);
             playCardScript.exchangeEffect++;
             Destroy(playCardScript.destoryList[k + playCardScript.useCardFree.Count].gameObject);
+            //playCardScript.useCardNotFree.RemoveAt(k);
         }
 
         checkExchange--;
         if (checkExchange == 0)
         {
+            foreach (var item in playCardScript.useCardFree)
+            {
+                if (item == null)
+                {
+                    playCardScript.useCardFree.Remove(item);
+                }
+            }
+            foreach (var item in playCardScript.useCardNotFree)
+            {
+                if (item == null)
+                {
+                    playCardScript.useCardNotFree.Remove(item);
+                }
+            }
             foreach (var item in playCardScript.destoryList)
             {
                 Destroy(item.gameObject);

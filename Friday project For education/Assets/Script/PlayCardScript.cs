@@ -283,16 +283,18 @@ public class PlayCardScript : MonoBehaviour
         foreach (var item in useCardFree)
         {
             if (item.GetComponent<CardObjScript>().thisCardInfo.must_use_card &&
-                item.GetComponent<CardObjScript>().usedEffect)
+                !item.GetComponent<CardObjScript>().usedEffect)
             {
+                Debug.Log("canEnd = false;");
                 canEnd = false;
             }
         }
         foreach (var item in useCardNotFree)
         {
             if (item.GetComponent<CardObjScript>().thisCardInfo.must_use_card &&
-                item.GetComponent<CardObjScript>().usedEffect)
+                !item.GetComponent<CardObjScript>().usedEffect)
             {
+                Debug.Log("canEnd = false;");
                 canEnd = false;
             }
         }
@@ -336,10 +338,13 @@ public class PlayCardScript : MonoBehaviour
             foreach (var item in findMax)
             {
                 powerAll += item;
-                if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.num_effect == 3)
+                if (fightPirate)
+                {
+                    if (fightThis.GetComponent<CardObjPirateScript>().thisCardInfo.num_effect == 3)
                 {
                     powerAll++;
                 }//3 : การ์ดที่หงายจะ + 1 พลัง
+                }
             }
             Debug.Log("powerAll : " + powerAll);
 
@@ -438,14 +443,14 @@ public class PlayCardScript : MonoBehaviour
             }
         }
 
-        foreach (var item in destoryList)
-        {
-            item.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(delegate
-            {
-                item.GetComponent<CardObjScript>().effectCard.gameObject.GetComponent<PlayCardScript>().
-                DestroyCard(this.gameObject, item.GetComponent<CardObjScript>().thisCardInfo.use_hp_to_destroy);
-            });
-        }//ให้ค่ากลับมาเท่าเดิม
+        //foreach (var item in destoryList)
+        //{
+        //    item.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(delegate
+        //    {
+        //        item.GetComponent<CardObjScript>().effectCard.gameObject.GetComponent<PlayCardScript>().
+        //        DestroyCard(gameObject, item.GetComponent<CardObjScript>().thisCardInfo.use_hp_to_destroy);
+        //    });
+        //}//ให้ค่ากลับมาเท่าเดิม
     }
     public void DontDestroyCard()
     {

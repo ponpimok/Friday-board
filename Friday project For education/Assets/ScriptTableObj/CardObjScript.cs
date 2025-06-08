@@ -185,6 +185,7 @@ public class CardObjScript : MonoBehaviour
     }
     private void Update()
     {
+        useOnly = thisCardInfo.no_fight_card_in_game;
         destroyButton.gameObject.SetActive(showDestroyButtom);
         if (thisCardInfo.powerDouble)
         {
