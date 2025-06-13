@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: black 4
   m_EditorClassIdentifier: 
   no_fight_card: 1
+  no_fight_card_in_game: 0
   must_use_card: 0
   card_effect: 1
   card_effect_name: Highcrad =0
@@ -24,4 +25,5 @@ MonoBehaviour:
   name_fight_card: 
   take_card: 0
   power_enemy: 
+  ageCrad: 1
   artCard: {fileID: 21300000, guid: f77b3609973dd604792514464505fa2d, type: 3}

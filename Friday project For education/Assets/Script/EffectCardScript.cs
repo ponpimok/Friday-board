@@ -301,8 +301,10 @@ public class EffectCardScript : MonoBehaviour
         playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().use = 1;
         playCardScript.doubleUI.GetComponent<TextDoubleUIScript>().numExCard = k;
         playCardScript.doubleUIButton.gameObject.SetActive(true);
+
         playCardScript.useEffect = true;
         checkExchange = k;
+        Debug.Log(playCardScript.useCardFree.Count);
         int i = 0;
         foreach (var item in playCardScript.useCardFree)
         {
@@ -313,9 +315,8 @@ public class EffectCardScript : MonoBehaviour
             showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Exchange";
             int j = i;
             showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
-                () => ExchangeCrad(j, true)
+                () => ExchangeCrad(j, true , showCrad)
             );
-            Debug.Log(i);
             i++;
         }
         foreach (var item in playCardScript.useCardNotFree)
@@ -327,49 +328,35 @@ public class EffectCardScript : MonoBehaviour
             showCrad.GetComponent<CardObjScript>().destroyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Exchange";
             int j = i;
             showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(
-                () => ExchangeCrad(j, false)
+                () => ExchangeCrad(j, false , showCrad)
             );
             Debug.Log(i);
             i++;
         }
     }
-    private void ExchangeCrad(int k, bool free)
+    private void ExchangeCrad(int k, bool free , GameObject cardObj)
     {
         if (free)
         {
-            dataCardScript.my_crad_used.Add(playCardScript.useCardFree[k].GetComponent<CardObjScript>().thisCardInfo);
-            Destroy(playCardScript.useCardFree[k]);
+            dataCardScript.my_crad_used.Add(cardObj.GetComponent<CardObjScript>().thisCardInfo);
             playCardScript.num_to_draw--;
             Destroy(playCardScript.destoryList[k].gameObject);
+            Destroy(cardObj);
             //playCardScript.useCardFree.RemoveAt(k);
         }
         else
         {
             k -= playCardScript.useCardFree.Count;
-            dataCardScript.my_crad_used.Add(playCardScript.useCardNotFree[k].GetComponent<CardObjScript>().thisCardInfo);
-            Destroy(playCardScript.useCardNotFree[k]);
+            dataCardScript.my_crad_used.Add(cardObj.GetComponent<CardObjScript>().thisCardInfo);
             playCardScript.exchangeEffect++;
             Destroy(playCardScript.destoryList[k + playCardScript.useCardFree.Count].gameObject);
+            Destroy(cardObj);
             //playCardScript.useCardNotFree.RemoveAt(k);
         }
 
         checkExchange--;
         if (checkExchange == 0)
         {
-            foreach (var item in playCardScript.useCardFree)
-            {
-                if (item == null)
-                {
-                    playCardScript.useCardFree.Remove(item);
-                }
-            }
-            foreach (var item in playCardScript.useCardNotFree)
-            {
-                if (item == null)
-                {
-                    playCardScript.useCardNotFree.Remove(item);
-                }
-            }
             foreach (var item in playCardScript.destoryList)
             {
                 Destroy(item.gameObject);

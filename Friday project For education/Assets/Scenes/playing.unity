@@ -2785,6 +2785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp_text: {fileID: 1887202765}
   playCardScript: {fileID: 1434042154}
+  scoreScript: {fileID: 579624644}
   hp: 20
   max: 22
 --- !u!1 &468235863
@@ -3876,6 +3877,7 @@ GameObject:
   m_Component:
   - component: {fileID: 579624643}
   - component: {fileID: 579624642}
+  - component: {fileID: 579624644}
   m_Layer: 0
   m_Name: Script Scene
   m_TagString: Untagged
@@ -3911,6 +3913,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &579624644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579624641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec36e12a7dadf54286be396cf0e3611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dataCardScript: {fileID: 1434042153}
+  hp: {fileID: 467981631}
+  textScoreWin: {fileID: 54114493}
+  textScoreLose: {fileID: 1824849604}
 --- !u!1 &587145611
 GameObject:
   m_ObjectHideFlags: 0
@@ -6370,7 +6388,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1013754096
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9232,6 +9250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1183a764ae0caa4086b2a6bca325ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreScript: {fileID: 0}
   hp: {fileID: 467981631}
   phase: 0
   effectDownPhase: 0
@@ -11469,24 +11488,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   start_card:
-  - {fileID: 11400000, guid: 8efb5092e30f0444e9a99740899dc8e1, type: 2}
-  - {fileID: 11400000, guid: 8efb5092e30f0444e9a99740899dc8e1, type: 2}
-  - {fileID: 11400000, guid: 8efb5092e30f0444e9a99740899dc8e1, type: 2}
-  - {fileID: 11400000, guid: 8efb5092e30f0444e9a99740899dc8e1, type: 2}
-  - {fileID: 11400000, guid: 8efb5092e30f0444e9a99740899dc8e1, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 298584919ed09b34dbdeca862e16d01b, type: 2}
-  - {fileID: 11400000, guid: 7c5fa7ff50cd4904c9d68a9494ee6d23, type: 2}
-  - {fileID: 11400000, guid: 7c5fa7ff50cd4904c9d68a9494ee6d23, type: 2}
-  - {fileID: 11400000, guid: 7c5fa7ff50cd4904c9d68a9494ee6d23, type: 2}
-  - {fileID: 11400000, guid: 204e0fcced96c0e4aaa0f9ab3cb376cf, type: 2}
-  - {fileID: 11400000, guid: 58238e15e6db40f4ca117c819a39fefd, type: 2}
+  - {fileID: 11400000, guid: d0b4888d91a282645bd0fe255c9fe735, type: 2}
+  - {fileID: 11400000, guid: 6555164b7199e694bbcb9e11298c8780, type: 2}
+  - {fileID: 11400000, guid: 8e4740208159a60458134037d8581489, type: 2}
+  - {fileID: 11400000, guid: d0b4888d91a282645bd0fe255c9fe735, type: 2}
+  - {fileID: 11400000, guid: 6555164b7199e694bbcb9e11298c8780, type: 2}
+  - {fileID: 11400000, guid: 8e4740208159a60458134037d8581489, type: 2}
+  - {fileID: 11400000, guid: d0b4888d91a282645bd0fe255c9fe735, type: 2}
+  - {fileID: 11400000, guid: 6555164b7199e694bbcb9e11298c8780, type: 2}
+  - {fileID: 11400000, guid: 8e4740208159a60458134037d8581489, type: 2}
   age_card_b:
   - {fileID: 11400000, guid: b731ef6abaf7bca459728089f7bdcc54, type: 2}
   - {fileID: 11400000, guid: 799a9481213745c4db6e245bb526a0b5, type: 2}
@@ -14101,9 +14111,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1310971686}
+  - {fileID: 579624643}
   - {fileID: 321859111}
   - {fileID: 1677228243}
-  - {fileID: 579624643}
   - {fileID: 1434042152}
   - {fileID: 1453956981}
   - {fileID: 261281758}

@@ -25,4 +25,5 @@ MonoBehaviour:
   name_fight_card: 
   take_card: 0
   power_enemy: 
+  ageCrad: 1
   artCard: {fileID: 21300000, guid: e39440ce9537059468f9e9b64e903fcc, type: 3}

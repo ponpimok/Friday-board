@@ -20,5 +20,7 @@ public class CardPlayScript : ScriptableObject
     public int take_card; //จำนวนการ์ดที่สามารถใช้สูดได้
     public int[] power_enemy;//พลังของอุปสรรค
 
+    public bool ageCrad;
+
     public Sprite artCard;
 }

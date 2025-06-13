@@ -8,6 +8,7 @@ public class TextHPScroipt : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI hp_text;
     [SerializeField] private PlayCardScript playCardScript;
+    [SerializeField] private ScoreScript scoreScript;
     public int hp;
     public int max;
     void Update()
@@ -18,9 +19,10 @@ public class TextHPScroipt : MonoBehaviour
         }
         hp_text.text = hp.ToString() + "/" + max.ToString();
 
-        if (hp <= 0)
+        if (hp < 0)
         {
             playCardScript.loseUI.SetActive(true);
+            scoreScript.CalculateScore(playCardScript.pirateWin);
         }
     }
 }

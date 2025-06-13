@@ -14,14 +14,6 @@ public class SceneManagerScript : MonoBehaviour
     {
 
     }
-    public void Setting_Buttom()
-    {
-
-    }
-    public void Story_Button()
-    {
-        
-    }
     public void Score_Button()
     {
 

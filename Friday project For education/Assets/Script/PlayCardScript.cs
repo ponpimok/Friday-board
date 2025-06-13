@@ -5,12 +5,14 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class PlayCardScript : MonoBehaviour
 {
     [Header("Reg Script")]
     private DataCardScript dataCardScript;
     private EffectCardScript effectCardScript;
+    [SerializeField] private ScoreScript scoreScript;
     public TextHPScroipt hp;
 
     [Header("Check Value")]
@@ -334,7 +336,7 @@ public class PlayCardScript : MonoBehaviour
                 highCradSetZero = false;
                 int i = findMax.Max();
                 findMax.Remove(i);
-            }
+            }//หาการ์ด highCradSetZero
             foreach (var item in findMax)
             {
                 powerAll += item;
@@ -347,7 +349,6 @@ public class PlayCardScript : MonoBehaviour
                 }
             }
             Debug.Log("powerAll : " + powerAll);
-
 
             if (!fightPirate)
             {
@@ -373,12 +374,20 @@ public class PlayCardScript : MonoBehaviour
                         foreach (var item in useCardFree)
                         {
                             GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
+                            showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(delegate {
+                                    effectCardScript.gameObject.GetComponent<PlayCardScript>().
+                                    DestroyCard(showCrad.gameObject, showCrad.GetComponent<CardObjScript>().thisCardInfo.use_hp_to_destroy);
+                            });
                             Destroy(item);
                             destoryList.Add(showCrad);
                         }
                         foreach (var item in useCardNotFree)
                         {
                             GameObject showCrad = Instantiate(item, destroyCradUI.GetComponent<TextDestroyCradScript>().showCrad);
+                            showCrad.GetComponent<CardObjScript>().destroyButton.onClick.AddListener(delegate {
+                                effectCardScript.gameObject.GetComponent<PlayCardScript>().
+                                DestroyCard(showCrad.gameObject, showCrad.GetComponent<CardObjScript>().thisCardInfo.use_hp_to_destroy);
+                            });
                             Destroy(item);
                             destoryList.Add(showCrad);
                         }
@@ -404,6 +413,7 @@ public class PlayCardScript : MonoBehaviour
                     if (pirateWin == 2)
                     {
                         winUI.SetActive(true);
+                        scoreScript.CalculateScore(pirateWin);
                         //คำนวนคะแนน
                     }//ชนะเกม
                 }//การโจรสลัดใบต่อไป
@@ -462,6 +472,7 @@ public class PlayCardScript : MonoBehaviour
         {
             foreach (var item in destoryList)
             {
+                item.GetComponent<CardObjScript>().destroyButton.onClick.RemoveAllListeners();
                 dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
                 Destroy(item);
             }
@@ -506,6 +517,7 @@ public class PlayCardScript : MonoBehaviour
         }//age white
         else
         {
+            scoreScript.CalculateScore(pirateWin);
             loseUI.SetActive(false);
         }//gameover
     }
@@ -628,6 +640,33 @@ public class PlayCardScript : MonoBehaviour
     }
     private void Update()
     {
+        if (useCardFree.Count > 0)
+        {
+            for (int i = 0; i < useCardFree.Count; i++)
+            {
+                if (useCardFree[i] == null)
+                {
+                    useCardFree[i] = null;
+                    useCardFree.RemoveAt(i);
+                    UnityEditor.EditorUtility.SetDirty(this);
+                }
+            }
+        }
+
+        if (useCardNotFree.Count > 0)
+        {
+            for (int i = 0; i < useCardNotFree.Count; i++)
+            {
+                if (useCardNotFree[i] == null)
+                {
+                    useCardNotFree[i] = null;
+                    useCardNotFree.RemoveAt(i);
+                    UnityEditor.EditorUtility.SetDirty(this);
+                }
+            }
+        }
+
+
         if (fightThis != null)
         {
             if (!fightPirate)

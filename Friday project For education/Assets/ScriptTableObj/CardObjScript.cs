@@ -88,6 +88,7 @@ public class CardObjScript : MonoBehaviour
     }
     public void AddEffectCard(string nameEffect)
     {
+        text_effect.gameObject.SetActive(false);
         if (thisCardInfo.card_effect)
         {
             usedEffect = false;
@@ -129,6 +130,7 @@ public class CardObjScript : MonoBehaviour
                     break;
                 case "Copy":
                     useEffectButton.onClick.RemoveAllListeners();
+                    text_effect.gameObject.SetActive(true);
                     useEffectButton.onClick.AddListener(delegate { effectCard.CopyEffectCard(this.gameObject); });
                     break;
                 case "HP -1":
@@ -178,8 +180,8 @@ public class CardObjScript : MonoBehaviour
             text_power_fight_3.gameObject.SetActive(false);
         }
 
-        destroyButton.onClick.AddListener(delegate { effectCard.gameObject.GetComponent<PlayCardScript>().
-            DestroyCard(this.gameObject, thisCardInfo.use_hp_to_destroy); });
+        //destroyButton.onClick.AddListener(delegate { effectCard.gameObject.GetComponent<PlayCardScript>().
+        //    DestroyCard(this.gameObject, thisCardInfo.use_hp_to_destroy); });
 
 
     }
