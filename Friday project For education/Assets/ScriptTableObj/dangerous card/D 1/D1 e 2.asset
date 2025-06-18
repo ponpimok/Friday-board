@@ -16,7 +16,7 @@ MonoBehaviour:
   no_fight_card_in_game: 0
   must_use_card: 0
   card_effect: 1
-  card_effect_name: Exchange 2
+  card_effect_name: Exchange2
   effect_value: 2
   power_card: 0
   powerDouble: 0
@@ -25,4 +25,5 @@ MonoBehaviour:
   name_fight_card: 
   take_card: 1
   power_enemy: 000000000100000003000000
+  ageCrad: 0
   artCard: {fileID: 21300000, guid: ddc5aa0ea6c8835409ee8a6acf9427b3, type: 3}

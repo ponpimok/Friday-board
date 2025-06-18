@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class EffectCardScript : MonoBehaviour
 {
@@ -340,18 +339,18 @@ public class EffectCardScript : MonoBehaviour
         {
             dataCardScript.my_crad_used.Add(cardObj.GetComponent<CardObjScript>().thisCardInfo);
             playCardScript.num_to_draw--;
-            Destroy(playCardScript.destoryList[k].gameObject);
             Destroy(cardObj);
-            //playCardScript.useCardFree.RemoveAt(k);
+            //Destroy(playCardScript.destoryList[k].gameObject);
+            Destroy(playCardScript.useCardFree[k].gameObject);
         }
         else
         {
             k -= playCardScript.useCardFree.Count;
             dataCardScript.my_crad_used.Add(cardObj.GetComponent<CardObjScript>().thisCardInfo);
             playCardScript.exchangeEffect++;
-            Destroy(playCardScript.destoryList[k + playCardScript.useCardFree.Count].gameObject);
             Destroy(cardObj);
-            //playCardScript.useCardNotFree.RemoveAt(k);
+            //Destroy(playCardScript.destoryList[k + playCardScript.useCardFree.Count].gameObject);
+            Destroy(playCardScript.useCardNotFree[k].gameObject);
         }
 
         checkExchange--;

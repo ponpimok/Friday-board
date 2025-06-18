@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class PlayCardScript : MonoBehaviour
 {
@@ -166,13 +166,13 @@ public class PlayCardScript : MonoBehaviour
                     if (dataCardScript.my_crad.Count > 0)
                     {
                         GameObject newCradUseFree = Instantiate(cardPrefad, positionCardFree);
+                        newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = true;
                         newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
                         newCradUseFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
                         newCradUseFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
 
                         dataCardScript.my_crad[0] = null;
                         dataCardScript.my_crad.RemoveAt(0);
-                        UnityEditor.EditorUtility.SetDirty(this);
 
                         useCardFree.Add(newCradUseFree);
 
@@ -201,13 +201,13 @@ public class PlayCardScript : MonoBehaviour
                         }//exchange
 
                         GameObject newCradUseNotFree = Instantiate(cardPrefad, positionCardNotFree);
+                        newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo.no_fight_card_in_game = true;
                         newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
                         newCradUseNotFree.GetComponent<CardObjScript>().thisCardInfo = dataCardScript.my_crad[0];
                         newCradUseNotFree.GetComponent<CardObjScript>().effectCard = effectCardScript;
 
                         dataCardScript.my_crad[0] = null;
                         dataCardScript.my_crad.RemoveAt(0);
-                        UnityEditor.EditorUtility.SetDirty(this);
 
                         useCardNotFree.Add(newCradUseNotFree);
                     }
@@ -227,8 +227,6 @@ public class PlayCardScript : MonoBehaviour
 
                         dataCardScript.my_crad[0] = null;
                         dataCardScript.my_crad.RemoveAt(0);
-                        UnityEditor.EditorUtility.SetDirty(this);
-
                         useCardFree.Add(newCradUseFree);
 
                         if (newCradUseFree.GetComponent<CardObjScript>().thisCardInfo.card_effect_name == "Stop")
@@ -266,7 +264,6 @@ public class PlayCardScript : MonoBehaviour
 
                         dataCardScript.my_crad[0] = null;
                         dataCardScript.my_crad.RemoveAt(0);
-                        UnityEditor.EditorUtility.SetDirty(this);
 
                         useCardNotFree.Add(newCradUseNotFree);
                     }
@@ -488,18 +485,14 @@ public class PlayCardScript : MonoBehaviour
             dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
             Destroy(item);
         }
-        UnityEditor.EditorUtility.SetDirty(this);
         useCardFree.Clear();
-        UnityEditor.EditorUtility.SetDirty(this);
         foreach (var item in useCardNotFree)
         {
             item.GetComponent<CardObjScript>().thisCardInfo.powerDouble = false;
             dataCardScript.my_crad_used.Add(item.GetComponent<CardObjScript>().thisCardInfo);
             Destroy(item);
         }
-        UnityEditor.EditorUtility.SetDirty(this);
         useCardNotFree.Clear();
-        UnityEditor.EditorUtility.SetDirty(this);
     }
     private void AddAgeCard()
     {
@@ -520,6 +513,11 @@ public class PlayCardScript : MonoBehaviour
             scoreScript.CalculateScore(pirateWin);
             loseUI.SetActive(false);
         }//gameover
+
+        foreach (var item in dataCardScript.my_crad)
+        {
+            item.no_fight_card_in_game = true;
+        }
     }
     public void CancelDoubleUIButton()
     {
@@ -648,7 +646,6 @@ public class PlayCardScript : MonoBehaviour
                 {
                     useCardFree[i] = null;
                     useCardFree.RemoveAt(i);
-                    UnityEditor.EditorUtility.SetDirty(this);
                 }
             }
         }
@@ -661,11 +658,9 @@ public class PlayCardScript : MonoBehaviour
                 {
                     useCardNotFree[i] = null;
                     useCardNotFree.RemoveAt(i);
-                    UnityEditor.EditorUtility.SetDirty(this);
                 }
             }
         }
-
 
         if (fightThis != null)
         {

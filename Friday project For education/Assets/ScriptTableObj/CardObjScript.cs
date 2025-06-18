@@ -122,10 +122,10 @@ public class CardObjScript : MonoBehaviour
                 case "Phase -1":
                     useEffectButton.onClick.AddListener(delegate { effectCard.DownPhase(); });
                     break;
-                case "Exchange 1":
+                case "Exchange1":
                     useEffectButton.onClick.AddListener(delegate { effectCard.Exchange(1); });
                     break;
-                case "Exchange 2":
+                case "Exchange2":
                     useEffectButton.onClick.AddListener(delegate { effectCard.Exchange(2); });
                     break;
                 case "Copy":
@@ -153,14 +153,12 @@ public class CardObjScript : MonoBehaviour
         image_card.sprite = thisCardInfo.artCard;
         AddEffectCard(thisCardInfo.card_effect_name);
 
-        Debug.Log("no_fight_card_in_game : " + thisCardInfo.no_fight_card_in_game);
-        useOnly = thisCardInfo.no_fight_card_in_game;
-
         text_name_use.text = thisCardInfo.name_use_card;
         text_power_use.text = thisCardInfo.power_card.ToString();
         text_effect.text = thisCardInfo.card_effect_name;
         text_destroy.text = thisCardInfo.use_hp_to_destroy.ToString();
 
+        useOnly = thisCardInfo.no_fight_card_in_game;
         if (!useOnly)
         {
             text_name_fight.text = thisCardInfo.name_fight_card;
